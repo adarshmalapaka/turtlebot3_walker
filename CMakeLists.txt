@@ -9,6 +9,7 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
 
 add_executable(walker src/robot_walker.cpp)
 ament_target_dependencies(walker rclcpp geometry_msgs sensor_msgs)
