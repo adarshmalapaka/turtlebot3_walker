@@ -76,10 +76,22 @@ void Tb3Walker::timer_callback() {
 }
 
 bool Tb3Walker::detect_obstacle() {
-    auto ray_idx = 0;
-    center_dist_ = scan_.ranges[ray_idx];
-    left_dist_ = scan_.ranges[(scan_.angle_max/scan_.angle_increment) - 25];
-    right_dist_ = scan_.ranges[ray_idx + 25];
+    if (scan_.angle_min != 0) {
+        auto ray_idx = static_cast<int>(
+            (scan_.angle_max - scan_.angle_min)/(scan_.angle_increment) - 1);
+        center_dist_ = scan_.ranges[ray_idx];
+        left_dist_ = scan_.ranges[ray_idx - 25];
+        right_dist_ = scan_.ranges[ray_idx + 25];
+    } else {
+        auto ray_idx = 0;
+        center_dist_ = scan_.ranges[ray_idx];
+        left_dist_ =
+                    scan_.ranges[(scan_.angle_max/scan_.angle_increment) - 25];
+        right_dist_ = scan_.ranges[ray_idx + 25];
+    }
+
+    RCLCPP_INFO_STREAM(this->get_logger(), "Distance: " << left_dist_ <<
+                 " " << center_dist_ << " " << right_dist_);
 
     if (left_dist_ < 0.8 || center_dist_ < 0.8 || right_dist_ < 0.8) {
         RCLCPP_INFO_STREAM(this->get_logger(), "Obstacle detected!");
