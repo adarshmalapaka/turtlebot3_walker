@@ -15,7 +15,11 @@
 #include "../include/turtlebot3_walker/Tb3Walker.hpp"
 
 Tb3Walker::Tb3Walker()
-    : Node("walker"), state_(STOP) {
+    : Node("walker"),
+      left_dist_(0.0),
+      center_dist_(0.0),
+      right_dist_(0.0),
+      state_(STOP) {
        auto pubTopicName = "cmd_vel";
        publisher_ = this->create_publisher<TWIST> (pubTopicName, 10);
 
