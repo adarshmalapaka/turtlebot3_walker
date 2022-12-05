@@ -42,5 +42,8 @@ class Tb3Walker : public rclcpp::Node {
     rclcpp::Subscription<SCAN>::SharedPtr subscription_;
     rclcpp::TimerBase::SharedPtr timer_;
     SCAN scan_;
+    float left_dist_;
+    float center_dist_;
+    float right_dist_;
     StateType state_;
 };

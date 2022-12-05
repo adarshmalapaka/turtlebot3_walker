@@ -14,7 +14,6 @@
 
 #include "../include/turtlebot3_walker/Tb3Walker.hpp"
 
-
 Tb3Walker::Tb3Walker()
     : Node("walker"), state_(STOP) {
        auto pubTopicName = "cmd_vel";
@@ -77,9 +76,12 @@ void Tb3Walker::timer_callback() {
 }
 
 bool Tb3Walker::detect_obstacle() {
-    auto distance = scan_.ranges[0];
+    auto ray_idx = 0;
+    center_dist_ = scan_.ranges[ray_idx];
+    left_dist_ = scan_.ranges[(scan_.angle_max/scan_.angle_increment) - 25];
+    right_dist_ = scan_.ranges[ray_idx + 25];
 
-    if (distance < 0.8) {
+    if (left_dist_ < 0.8 || center_dist_ < 0.8 || right_dist_ < 0.8) {
         RCLCPP_INFO_STREAM(this->get_logger(), "Obstacle detected!");
         return true;
     }
