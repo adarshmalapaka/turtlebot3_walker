@@ -11,6 +11,16 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+/**
+ * @file robot_walker.cpp
+ * @author Adarsh Malapaka (adarshmalapaka98@gmail.com)
+ * @brief Implementation of the Tb3Walker class methods
+ * @version 0.1
+ * @date 2022-12-05
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
 
 #include "../include/turtlebot3_walker/Tb3Walker.hpp"
 
@@ -37,6 +47,7 @@ void Tb3Walker::scan_callback(const SCAN& msg) {
 }
 
 void Tb3Walker::timer_callback() {
+    // wait until the first scan data is read.
     if (scan_.header.stamp.sec == 0)
       return;
 
@@ -80,7 +91,9 @@ void Tb3Walker::timer_callback() {
 }
 
 bool Tb3Walker::detect_obstacle() {
+    // For laser scans with non-zero minimium angle
     if (scan_.angle_min != 0) {
+        // Index for the center laser scan ray
         auto ray_idx = static_cast<int>(
             (scan_.angle_max - scan_.angle_min)/(scan_.angle_increment) - 1);
         center_dist_ = scan_.ranges[ray_idx];
@@ -97,6 +110,7 @@ bool Tb3Walker::detect_obstacle() {
     RCLCPP_INFO_STREAM(this->get_logger(), "Distance: " << left_dist_ <<
                  " " << center_dist_ << " " << right_dist_);
 
+    // Obstacle is detected if either of the laser scan rays picks up one.
     if (left_dist_ < 0.8 || center_dist_ < 0.8 || right_dist_ < 0.8) {
         RCLCPP_INFO_STREAM(this->get_logger(), "Obstacle detected!");
         return true;
